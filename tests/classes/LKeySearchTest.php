@@ -1,10 +1,15 @@
 <?
 Class LKeySearchTest extends Kohana_UnitTest_TestCase {
+	public static $keys = array('a', 'ab', 'abc', 'b', 'before', 'd', 'de', 'da', 'dad', 'z');
+	public static $record_ids = array(1, 10, 12, 3, 4, 345, 233, 455, 34, 2);
 
   public static function setUpBeforeClass(){
   }
 
   public static function tearDownAfterClass(){
+		$sql = "DELETE FROM lsearchkeys";
+		$db = Database::instance();
+		$db->query(Database::DELETE, $sql);
   }
 
   public function testAddKeysFunctionExists(){
@@ -14,6 +19,24 @@ Class LKeySearchTest extends Kohana_UnitTest_TestCase {
   public function testDropKeysFunctionExists(){
 		lkeysearch::drop_keys_with_tag( 'dummy' );
   }
+
+
+  public function testAddKeys(){
+		lkeysearch::add_keys_with_tag( 'testKeys', self::$keys, self::$record_ids );
+		$all = ORM::factory('lsearchkey')->where('tag', '=', 'testKeys')->find_all();
+		$this->assertEquals(count($all), count(self::$keys));
+  }
+
+  /**
+   * @depends testAddKeys
+   **/
+  public function testDropKeys(){
+		lkeysearch::drop_keys_with_tag( 'testKeys' );
+		$all = ORM::factory('lsearchkey')->find_all();
+		$this->assertEquals(count($all), 0);
+  }
+
+
 	/*
   public function testAssociatorPoolWithAll(){
 
