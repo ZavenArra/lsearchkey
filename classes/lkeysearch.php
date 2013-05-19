@@ -89,4 +89,24 @@ class lkeysearch {
 
 	}
 
+	static function count_joined_records_like($search, $tag, $table){
+		$search = mysql_real_escape_string($search);
+		$tag = mysql_real_escape_string($tag);
+
+		$sql = "SELECT count(id) as row_count FROM $table ".
+			"JOIN  ( ".
+			"SELECT DISTINCT record_id, min(search_key) as min_search_key ".
+			"FROM lsearchkeys ".
+			"WHERE tag = '$tag' ".
+			"AND ( search_key LIKE '$search%' OR search_key LIKE '% $search%' ) ".
+			"GROUP BY id ".
+			"ORDER BY min_search_key ".
+			" ) search_results ON $table.id = search_results.record_id ";
+		$db = Database::instance();
+		$result = $db->query(Database::SELECT, $sql, TRUE);
+		return $result->get('row_count');
+		
+						
+	}
+
 }
