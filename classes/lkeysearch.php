@@ -7,9 +7,13 @@ class lkeysearch {
 			throw new Kohana_Exception("LKeySearch Exception", "Number of keys must equal number of record_ids");
 		}
 
+		$tag = mysql_real_escape_string($tag);
+
 		$inserts = array();
 		for( $i=0; $i<count($keys); $i++){
-			$inserts[] = "( '$tag', '$keys[$i]', $record_ids[$i] )";
+			$key = mysql_real_escape_string($keys[$i]);
+			$record_id = mysql_real_escape_string($record_ids[$i]);
+			$inserts[] = "( '$tag', '$key', $record_id )";
 		}
 		$insert_sql = "INSERT INTO lsearchkeys ( tag, search_key, record_id ) VALUES ".implode($inserts, ",");
 
@@ -49,6 +53,8 @@ class lkeysearch {
 	}
 
 	static function search_keys_like_distinct($search, $offset, $limit, $tag){
+		$search = mysql_real_escape_string($search);
+		$tag = mysql_real_escape_string($tag);
 		$sql =  "SELECT DISTINCT record_id, min(search_key) as min_search_key ".
 			"FROM lsearchkeys ".
 			"WHERE tag = '$tag' ".
@@ -56,14 +62,15 @@ class lkeysearch {
 			"GROUP BY record_id ".
 			"ORDER BY min_search_key ".
 			"LIMIT $offset, $limit";
-		Kohana::$log->add(Log::INFO, $sql);
 		$db = Database::instance();
 		$results = $db->query(Database::SELECT, $sql);
 		return $results;
 	}
 
 
-	static function joined_records_like($search, $offset, $limit, $tag, $table){
+	static function search_joined_records_like($search, $offset, $limit, $tag, $table, $as_object = false){
+		$search = mysql_real_escape_string($search);
+		$tag = mysql_real_escape_string($tag);
 		$sql = "SELECT * FROM $table ".
 			"JOIN  ( ".
 			"SELECT DISTINCT record_id, min(search_key) as min_search_key ".
@@ -73,11 +80,11 @@ class lkeysearch {
 			"GROUP BY id ".
 			"ORDER BY min_search_key ".
 			" ) search_results ON $table.id = search_results.record_id ".
-			" LIMIT $offset, $limit ".
-			" order_by search_results.min_search_key ";
+			" ORDER BY search_results.min_search_key ".
+			" LIMIT $offset, $limit ";
 						
 		$db = Database::instance();
-		$results = $db->query(Database::SELECT, $sql);
+		$results = $db->query(Database::SELECT, $sql, $as_object);
 		return $results;
 
 	}
