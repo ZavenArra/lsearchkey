@@ -52,7 +52,7 @@ Class LKeySearchTest extends Kohana_UnitTest_TestCase {
 		lkeysearch::add_keys_with_tag( $tag, self::$keys, self::$record_ids );
 		$r1 = lkeysearch::search_keys_like('a', 0, 100, $tag);
 		$r2 = lkeysearch::search_keys_like('ab', 0, 100, $tag);
-		//lkeysearch::drop_keys_with_tag( $tag);
+		lkeysearch::drop_keys_with_tag( $tag);
 
 		$this->assertEquals(4, $r1->count());
 		$this->assertEquals(2, $r2->count());
@@ -64,10 +64,11 @@ Class LKeySearchTest extends Kohana_UnitTest_TestCase {
 		lkeysearch::add_keys_with_tag( $tag, self::$keys_many_to_many, self::$record_ids_many_to_many );
 		$r1 = lkeysearch::search_keys_like_distinct('a', 0, 100, $tag);
 		$r2 = lkeysearch::search_keys_like_distinct('', 0, 100, $tag);
-		//lkeysearch::drop_keys_with_tag( $tag);
+		lkeysearch::drop_keys_with_tag( $tag);
 
 		$this->assertEquals(2, count($r1));
 		$this->assertEquals(4, count($r2));
 	}
+
 
 }
