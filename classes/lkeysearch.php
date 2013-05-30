@@ -27,6 +27,12 @@ class lkeysearch {
 		$db->query(Database::DELETE, $sql);
 	}
 
+	static function drop_keys_with_tag_and_record_id($tag, $record_id){
+		$sql = "DELETE FROM lsearchkeys WHERE tag = '$tag' AND record_id = $record_id";
+		$db = Database::instance();
+		$db->query(Database::DELETE, $sql);
+	}
+
 	static function distinct_search_keys_with_tag($tag, $sort = 'ASC'){
 		
 		$results = DB::select('search_key')
