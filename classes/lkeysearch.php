@@ -21,6 +21,19 @@ class lkeysearch {
 		$db->query(Database::INSERT, $insert_sql);
 	}
 
+	static function add_key_map_with_tag($tag, $map){
+		$keys = array();
+		$record_ids = array();
+
+		foreach($map as $key => $record_id){
+			$keys[] = $key;
+			$record_ids[] = $record_id;
+		}
+
+		self::add_keys_with_tag($tag, $keys, $record_ids);
+
+	}
+
 	static function drop_keys_with_tag($tag){
 		$sql = "DELETE FROM lsearchkeys WHERE tag = '$tag'";
 		$db = Database::instance();
