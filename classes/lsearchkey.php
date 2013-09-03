@@ -83,7 +83,7 @@ class lsearchkey {
 		if($limit != null){
 			$sql .= "LIMIT $offset, $limit";
 		} else {
-			$sql .= "LIMIT $offset";
+			$sql .= "LIMIT $offset, 18446744073709551615";
 		}
 		$db = Database::instance();
 		$results = $db->query(Database::SELECT, $sql);
@@ -100,11 +100,16 @@ class lsearchkey {
 			"FROM lsearchkeys ".
 			"WHERE tag = '$tag' ".
 			"AND ( search_key LIKE '$search%' OR search_key LIKE '% $search%' ) ".
-			"GROUP BY id ".
+			"GROUP BY record_id ".
 			"ORDER BY min_search_key ".
 			" ) search_results ON $table.id = search_results.record_id ".
-			" ORDER BY search_results.min_search_key ".
-			" LIMIT $offset, $limit ";
+			" ORDER BY search_results.min_search_key, id ";
+
+		if($limit != null){
+			$sql .= "LIMIT $offset, $limit";
+		} else {
+			$sql .= "LIMIT $offset, 18446744073709551615";
+		}
 						
 		$db = Database::instance();
 		$results = $db->query(Database::SELECT, $sql, $as_object);
@@ -122,7 +127,7 @@ class lsearchkey {
 			"FROM lsearchkeys ".
 			"WHERE tag = '$tag' ".
 			"AND ( search_key LIKE '$search%' OR search_key LIKE '% $search%' ) ".
-			"GROUP BY id ".
+			"GROUP BY record_id ".
 			"ORDER BY min_search_key ".
 			" ) search_results ON $table.id = search_results.record_id ";
 		$db = Database::instance();
