@@ -74,13 +74,17 @@ class lkeysearch {
 	static function search_keys_like_distinct($search, $offset, $limit, $tag){
 		$search = mysql_real_escape_string($search);
 		$tag = mysql_real_escape_string($tag);
-		$sql =  "SELECT DISTINCT record_id, min(search_key) as min_search_key ".
+		$sql =  "SELECT DISTINCT min(search_key) as min_search_key ".
 			"FROM lsearchkeys ".
 			"WHERE tag = '$tag' ".
 			"AND ( search_key LIKE '$search%' OR search_key LIKE '% $search%' ) ".
 			"GROUP BY record_id ".
-			"ORDER BY min_search_key ".
-			"LIMIT $offset, $limit";
+			"ORDER BY min_search_key ";
+		if($limit != null){
+			$sql .= "LIMIT $offset, $limit";
+		} else {
+			$sql .= "LIMIT $offset";
+		}
 		$db = Database::instance();
 		$results = $db->query(Database::SELECT, $sql);
 		return $results;
