@@ -1,6 +1,6 @@
 <?php
 
-class lkeysearch {
+class lsearchkey {
 
 	static function add_keys_with_tag($tag, $keys, $record_ids){
 		if(count($keys) != count($record_ids)){

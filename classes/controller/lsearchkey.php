@@ -1,6 +1,6 @@
 <?php
 
-Class Controller_LKeySearch extends Lattice_Controller_Ajax {
+Class Controller_LSearchKey extends Lattice_Controller_Ajax {
 
 	public function action_keys_for_search($search, $tag, $limit = 20, $offset = 0){
 		$results = lkeysearch::search_keys_like($search, $offset, $limit, $tag);
